@@ -87,9 +87,11 @@ const fetchUser = async ()=> {
         this.state = {
           note: ''
         };
+        this.create = this.create.bind(this);
       }
       create (){
-
+        this.props.onCreate(this.props.note)
+        this.props.history.push('/note')
       }
       render(){
         const { note } = this.state;
@@ -135,7 +137,7 @@ const fetchUser = async ()=> {
               <Switch>
                 <Route path='/notes/page' render={()=> <Notes notes={ notes }/>}/>
                 <Route path='/notes/archived' render={()=> <Archived notes={ notes }/>}/>
-                <Route path='/notes/create' render={()=> <Create onCreate={ onCreate }/>}/>
+                <Route path='/notes/create' render={(props)=> <Create {...props} onCreate={ onCreate }/>}/>
               </Switch>
             </HashRouter>
           );
