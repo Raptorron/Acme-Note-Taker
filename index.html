@@ -40,10 +40,10 @@ const fetchUser = async ()=> {
   return  user;
 };
 
-    const Nav = ()=> {
+    const Nav = ({ notes })=> {
       return(
         <nav>
-          <NavLink to='/notes'>Notes</NavLink>
+          <NavLink to='/notes'>Notes ({ notes.length })</NavLink>
           <NavLink to='/notes/archived'>Archived</NavLink>
           <NavLink to='/notes/create'>Create</NavLink>
 
@@ -62,11 +62,18 @@ const fetchUser = async ()=> {
             notes: []
           };
         }
+        async componentDidMount(){
+          const user = await fetchUser();
+          const notes = (await axios.get(`${API}/users/${ user.id }/notes`)).data
+          this.setState({ user, notes });
+        }
 
         render(){
+          const { user, notes } = this.state;
           return(
             <HashRouter>
-              <Route render={()=> <Nav />}/>
+              <h1> Acme Note Taker for { user.fullName }</h1>
+              <Route render={()=> <Nav notes={ notes } />}/>
             </HashRouter>
           );
         }
