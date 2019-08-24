@@ -6,7 +6,10 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js"></script>
     <style>
-
+      nav {
+        display: flex;
+        justify-content: space-around;
+      }
     </style>
   </head>
   <body>
@@ -14,7 +17,7 @@
     <script type="text/babel">
       const { render } = ReactDOM;
       const { createElement, Component } = React;
-      const { Route, HashRouter, Link, Redirect, Switch } = ReactRouterDOM;
+      const { Route, HashRouter, NavLink, Redirect, Switch } = ReactRouterDOM;
       const root = document.querySelector('#root');
 
 
@@ -37,6 +40,16 @@ const fetchUser = async ()=> {
   return  user;
 };
 
+    const Nav = ()=> {
+      return(
+        <nav>
+          <NavLink to='/notes'>Notes</NavLink>
+          <NavLink to='/notes/archived'>Archived</NavLink>
+          <NavLink to='/notes/create'>Create</NavLink>
+
+        </nav>
+      );
+    };
 
 
 
@@ -45,11 +58,17 @@ const fetchUser = async ()=> {
         constructor(){
           super()
           this.state={
-
-          }
+            user: {},
+            notes: []
+          };
         }
-        render(){
 
+        render(){
+          return(
+            <HashRouter>
+              <Route render={()=> <Nav />}/>
+            </HashRouter>
+          );
         }
       }
 
