@@ -43,7 +43,12 @@ const fetchUser = async ()=> {
       return (
         <ul>
           {
-            notes.map(note=> <li key={ note.id }>{ note.text }</li>)
+            notes.map(note=>
+            <li key={ note.id }>
+              { note.text }
+              <button>Archive</button>
+              <button>Destroy</button>
+            </li>)
           }
         </ul>
       );
@@ -53,13 +58,40 @@ const fetchUser = async ()=> {
       const archived = notes.filter(note=>note.archived === true);
       return(
         <nav>
-          <NavLink to='/notes'>Notes ({ notes.length })</NavLink>
+          <NavLink to='/notes/page'>Notes ({ notes.length })</NavLink>
           <NavLink to='/notes/archived'>Archived({ archived.length })</NavLink>
           <NavLink to='/notes/create'>Create</NavLink>
         </nav>
       );
     };
 
+    const Archived = ({ notes })=> {
+      const archived = notes.filter(note=>note.archived === true);
+      return (
+        <ul>
+          {
+            archived.map(note=> <li key={ note.id }>{ note.text }</li>)
+          }
+        </ul>
+      );
+    }
+
+    class Create extends Component {
+      constructor(){
+        super();
+        this.state = {
+          note: ''
+        };
+      }
+      render(){
+        return (
+          <form>
+            <input name='note' />
+            <button>Create Note</button>
+          </form>
+        );
+      }
+    }
 
 
 
@@ -83,7 +115,11 @@ const fetchUser = async ()=> {
             <HashRouter>
               <h1> Acme Note Taker for { user.fullName }</h1>
               <Route render={()=> <Nav notes={ notes } />}/>
-              <Route path='/notes' render={()=> <Notes notes={ notes }/>}/>
+              <Switch>
+                <Route path='/notes/page' render={()=> <Notes notes={ notes }/>}/>
+                <Route path='/notes/archived' render={()=> <Archived notes={ notes }/>}/>
+                <Route path='/notes/create' render={()=> <Create />}/>
+              </Switch>
             </HashRouter>
           );
         }
