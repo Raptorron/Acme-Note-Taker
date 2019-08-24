@@ -88,11 +88,15 @@ const fetchUser = async ()=> {
           note: ''
         };
       }
+      create (){
+
+      }
       render(){
+        const { note } = this.state;
         return (
-          <form>
-            <input name='note' />
-            <button>Create Note</button>
+          <form onSubmit={ev=> ev.preventDefault()}>
+            <input name='note' value={ note } onChange={ ev => this.setState({ note: ev.target.value })} />
+            <button disabled={ !note } onClick={ console.log(note)}>Create Note</button>
           </form>
         );
       }
@@ -108,14 +112,21 @@ const fetchUser = async ()=> {
             notes: []
           };
         }
+
         async componentDidMount(){
           const user = await fetchUser();
           const notes = (await axios.get(`${API}/users/${ user.id }/notes`)).data
           this.setState({ user, notes });
         }
 
+        async onCreate(note){
+          const newNote = (await axios.post(`${API}/users/${ this.state.user.id }/notes`, `${ note }`)).data
+          this.setState({notes:[...notes, newNote]});
+        }
+
         render(){
           const { user, notes } = this.state;
+          const { onCreate } = this;
           return(
             <HashRouter>
               <h1> Acme Note Taker for { user.fullName }</h1>
@@ -123,7 +134,7 @@ const fetchUser = async ()=> {
               <Switch>
                 <Route path='/notes/page' render={()=> <Notes notes={ notes }/>}/>
                 <Route path='/notes/archived' render={()=> <Archived notes={ notes }/>}/>
-                <Route path='/notes/create' render={()=> <Create />}/>
+                <Route path='/notes/create' render={()=> <Create onCreate={ onCreate }/>}/>
               </Switch>
             </HashRouter>
           );
