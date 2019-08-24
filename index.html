@@ -90,15 +90,16 @@ const fetchUser = async ()=> {
         this.create = this.create.bind(this);
       }
       create (){
-        this.props.onCreate(this.props.note)
+        this.props.onCreate(this.state.note)
         this.props.history.push('/note')
       }
       render(){
         const { note } = this.state;
+        const { create } = this;
         return (
           <form onSubmit={ev=> ev.preventDefault()}>
             <input name='note' value={ note } onChange={ ev => this.setState({ note: ev.target.value })} />
-            <button disabled={ !note } onClick={ console.log(note)}>Create Note</button>
+            <button disabled={ !note } onClick={ create }>Create Note</button>
           </form>
         );
       }
@@ -123,7 +124,11 @@ const fetchUser = async ()=> {
         }
 
         async onCreate(note){
-          const newNote = (await axios.post(`${API}/users/${ this.state.user.id }/notes`, `${ note }`)).data
+          const payload = {
+            archived: false,
+            text: note
+          }
+          const newNote = (await axios.post(`${API}/users/${ this.state.user.id }/notes`,  payload )).data
           this.setState({notes:[...notes, newNote]});
         }
 
