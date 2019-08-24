@@ -44,6 +44,7 @@ const fetchUser = async ()=> {
 
 
     const Notes = ({ notes, onDestroy, onArchive })=> {
+      notes = notes.filter(note=>note.archived === false);
       return (
         <ul>
           {
@@ -62,7 +63,7 @@ const fetchUser = async ()=> {
       const archived = notes.filter(note=>note.archived === true);
       return(
         <nav>
-          <NavLink to='/notes/page'>Notes ({ notes.length })</NavLink>
+          <NavLink to='/notes/page'>Notes ({ notes.length-archived.length })</NavLink>
           <NavLink to='/notes/archived'>Archived({ archived.length })</NavLink>
           <NavLink to='/notes/create'>Create</NavLink>
         </nav>
@@ -116,10 +117,12 @@ const fetchUser = async ()=> {
           super()
           this.state={
             user: {},
-            notes: []
+            notes: [],
+            error: ''
           };
           this.onCreate = this.onCreate.bind(this)
           this.onDestroy = this.onDestroy.bind(this)
+          this.onArchive = this.onArchive.bind(this)
         }
 
         async componentDidMount(){
@@ -129,29 +132,44 @@ const fetchUser = async ()=> {
         }
 
         async onCreate(note){
+          this.setState({error: ''});
           const payload = {
             archived: false,
             text: note
           }
+          try{
           const newNote = (await axios.post(`${API}/users/${ this.state.user.id }/notes`,  payload )).data
           this.setState({notes:[...this.state.notes, newNote]});
+          } catch(ex) {
+            this.setState({error: ex.response.data.massage})
+
+          }
         }
 
         async onDestroy(note){
+
           await axios.delete(`${API}/users/${ this.state.user.id }/notes/${note.id}`);
           const notes = (await axios.get(`${API}/users/${ this.state.user.id }/notes`)).data
           this.setState({ notes })
+
         }
 
         async onArchive(note){
+          this.setState({error: ''})
+
           const payload = {
-            archived: true ? false : true,
-            text: note
+            archived: !note.archived,
+            text: note.text
           }
-          console.log('into archive')
+          console.log(!note.archived)
+
+          const updated = (await axios.put(`${API}/users/${ this.state.user.id }/notes/${note.id}`, payload)).data
+          let notes = this.state.notes.map(note => {return note.id === updated.id ? updated : note })
+          this.setState({notes})
+
         }
         render(){
-          const { user, notes } = this.state;
+          const { user, notes, error } = this.state;
           const { onCreate, onDestroy, onArchive } = this;
           return(
             <HashRouter>
