@@ -139,7 +139,8 @@ const fetchUser = async ()=> {
 
         async onDestroy(note){
           await axios.delete(`${API}/users/${ this.state.user.id }/notes/${note.id}`);
-          this.setState({ note:[...this.state.notes] })
+          const notes = (await axios.get(`${API}/users/${ this.state.user.id }/notes`)).data
+          this.setState({ notes })
         }
         render(){
           const { user, notes } = this.state;
