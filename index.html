@@ -51,7 +51,7 @@ const fetchUser = async ()=> {
             <li key={ note.id }>
               { note.text }
               <button>Archive</button>
-              <button onClick={onDestroy} >Destroy</button>
+              <button onClick={ ()=> onDestroy(note) } >Destroy</button>
             </li>)
           }
         </ul>
@@ -137,10 +137,9 @@ const fetchUser = async ()=> {
           this.setState({notes:[...this.state.notes, newNote]});
         }
 
-        async onDestroy(notes){
-          // await axios.delete(`${API}/users/${ this.state.user.id }/notes/${note.id}`);
-          // this.setState({notes})
-          console.log(notes)
+        async onDestroy(note){
+          await axios.delete(`${API}/users/${ this.state.user.id }/notes/${note.id}`);
+          this.setState({ note:[...this.state.notes] })
         }
         render(){
           const { user, notes } = this.state;
