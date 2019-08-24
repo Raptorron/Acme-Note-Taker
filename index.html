@@ -91,7 +91,7 @@ const fetchUser = async ()=> {
       }
       create (){
         this.props.onCreate(this.state.note)
-        this.props.history.push('/note')
+        // this.props.history.push('/note')
       }
       render(){
         const { note } = this.state;
@@ -129,7 +129,7 @@ const fetchUser = async ()=> {
             text: note
           }
           const newNote = (await axios.post(`${API}/users/${ this.state.user.id }/notes`,  payload )).data
-          this.setState({notes:[...notes, newNote]});
+          this.setState({notes:[...this.state.notes, newNote]});
         }
 
         render(){
