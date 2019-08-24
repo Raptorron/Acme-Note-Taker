@@ -39,14 +39,23 @@ const fetchUser = async ()=> {
   storage.setItem('userId', user.id);
   return  user;
 };
+    const Notes = ({ notes })=> {
+      return (
+        <ul>
+          {
+            notes.map(note=> <li key={ note.id }>{ note.text }</li>)
+          }
+        </ul>
+      );
+    };
 
     const Nav = ({ notes })=> {
+      const archived = notes.filter(note=>note.archived === true);
       return(
         <nav>
           <NavLink to='/notes'>Notes ({ notes.length })</NavLink>
-          <NavLink to='/notes/archived'>Archived</NavLink>
+          <NavLink to='/notes/archived'>Archived({ archived.length })</NavLink>
           <NavLink to='/notes/create'>Create</NavLink>
-
         </nav>
       );
     };
@@ -74,6 +83,7 @@ const fetchUser = async ()=> {
             <HashRouter>
               <h1> Acme Note Taker for { user.fullName }</h1>
               <Route render={()=> <Nav notes={ notes } />}/>
+              <Route path='/notes' render={()=> <Notes notes={ notes }/>}/>
             </HashRouter>
           );
         }
