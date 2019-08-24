@@ -70,7 +70,12 @@ const fetchUser = async ()=> {
       return (
         <ul>
           {
-            archived.map(note=> <li key={ note.id }>{ note.text }</li>)
+            archived.map(note=>
+            <li key={ note.id }>
+             { note.text }
+              <button>Unarchive</button>
+              <button>Destroy</button>
+            </li>)
           }
         </ul>
       );
