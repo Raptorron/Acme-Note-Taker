@@ -111,6 +111,7 @@ const fetchUser = async ()=> {
             user: {},
             notes: []
           };
+          this.onCreate = this.onCreate.bind(this)
         }
 
         async componentDidMount(){
